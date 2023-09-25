@@ -24,11 +24,29 @@ export const RightPanelLayout = ({
   isPanelOpen: boolean;
   setIsPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [size, setSize] = useState(isPanelOpen ? 384 : 0);
+  const [size, setSize] = useState(0);
 
   useEffect(() => {
-    isPanelOpen ? setSize(384) : setSize(0);
-  }, [isPanelOpen, setSize]);
+    const setBreakpointBoolean = () => {
+      // 768 = "md" breakpoint
+      if (window.innerWidth >= 768) {
+        if (isPanelOpen && size === 0) {
+          setSize(384);
+        } else if (!isPanelOpen && size !== 0) {
+          setSize(0);
+        }
+      } else {
+        if (size !== 0) {
+          setSize(0);
+        }
+      }
+    };
+    setBreakpointBoolean();
+
+    window.addEventListener("resize", setBreakpointBoolean);
+
+    return () => window.removeEventListener("resize", setBreakpointBoolean);
+  }, [isPanelOpen, size, setSize]);
 
   const filteredChildren = React.Children.toArray(children).filter((child) => {
     return !isElementOfType(child, RightPanelSidebar);
