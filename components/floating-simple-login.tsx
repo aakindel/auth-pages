@@ -1,5 +1,14 @@
 import React from "react";
 import { AuthForm } from "./auth-form";
+import { SmallComponentWrapper } from "./small-component-wrapper";
+
+export const FloatingSimpleLoginSmall = () => {
+  return (
+    <SmallComponentWrapper>
+      <FloatingSimpleLogin />
+    </SmallComponentWrapper>
+  );
+};
 
 export const FloatingSimpleLogin = () => {
   return (
