@@ -6,11 +6,13 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Icons } from "./icons";
 import React, { useState } from "react";
+import { signIn } from "next-auth/react";
 
 type AuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function AuthForm({ className, ...props }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isGitHubLoading, setIsGitHubLoading] = useState<boolean>(false);
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
@@ -57,8 +59,16 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isLoading || isGitHubLoading}
+        onClick={() => {
+          setIsGitHubLoading(true);
+          signIn("github");
+        }}
+      >
+        {isGitHubLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Icons.github className="mr-2 h-4 w-4" />
