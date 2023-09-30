@@ -3,6 +3,7 @@ import { Providers } from "./providers";
 import { inter, SFMono } from "../assets/fonts";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/components/session-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <Providers>{children}</Providers>
         </SessionProvider>
+        <Toaster />
       </body>
     </html>
   );
