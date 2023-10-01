@@ -4,11 +4,6 @@ import { MainNav } from "@/components/main-nav";
 import type { NextPage } from "next";
 import { RightPanelLayout, RightPanelSidebar } from "./right-panel-layout";
 import { useState } from "react";
-import { SimpleLogin, SimpleLoginSmall } from "@/components/simple-login";
-import {
-  LoginLeftPanel,
-  LoginLeftPanelSmall,
-} from "@/components/login-left-panel";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -20,53 +15,7 @@ import {
 import { cn } from "@/utils";
 import { LockIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import {
-  FloatingSimpleLogin,
-  FloatingSimpleLoginSmall,
-} from "@/components/floating-simple-login";
-import React from "react";
-
-type AuthComponentType = {
-  id: string;
-  title: string;
-  component: React.ReactNode;
-  componentSmall: React.ReactNode;
-  isLocked?: boolean;
-};
-
-const authComponents: AuthComponentType[] = [
-  {
-    id: "simple-login",
-    title: "Simple Login",
-    component: (
-      <div className="mx-auto h-[calc(100vh-57px)] w-full max-w-none p-0">
-        <SimpleLogin />
-      </div>
-    ),
-    componentSmall: <SimpleLoginSmall />,
-  },
-  {
-    id: "floating-simple-login",
-    title: "Floating Simple Login",
-    component: (
-      <div className="mx-auto h-[calc(100vh-57px)] w-full max-w-none p-0">
-        <FloatingSimpleLogin />
-      </div>
-    ),
-    componentSmall: <FloatingSimpleLoginSmall />,
-  },
-  {
-    id: "login-left-panel",
-    title: "Login with Left Panel",
-    component: (
-      <div className="mx-auto h-[calc(100vh-57px)] w-full max-w-none p-0">
-        <LoginLeftPanel />
-      </div>
-    ),
-    componentSmall: <LoginLeftPanelSmall />,
-    isLocked: true,
-  },
-];
+import { authComponents } from "./auth-components";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
