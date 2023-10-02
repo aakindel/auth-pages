@@ -24,7 +24,9 @@ export const RightPanelLayout = ({
   isPanelOpen: boolean;
   setIsPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [size, setSize] = useState(0);
+  const [size, setSize] = useState(
+    typeof window !== "undefined" && window.innerWidth >= 768 ? 384 : 0
+  );
 
   useEffect(() => {
     const setBreakpointBoolean = () => {

@@ -16,13 +16,16 @@ import { cn } from "@/utils";
 import { LockIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { authComponents } from "./auth-components";
+import { useAuthStoreHydration } from "./store";
+import { Icons } from "@/components/icons";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
+  const isAuthStoreHydrated = useAuthStoreHydration();
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [activeComponent, setActiveComponent] = useState(authComponents[0]);
 
-  return (
+  return isAuthStoreHydrated ? (
     <div className="mx-auto min-h-screen w-full">
       <RightPanelLayout
         isPanelOpen={isPanelOpen}
@@ -89,6 +92,13 @@ const Home: NextPage = () => {
           </RadioGroup>
         </RightPanelSidebar>
       </RightPanelLayout>
+    </div>
+  ) : (
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-2.5">
+      <Icons.spinner className="h-7 w-7 text-neutral-400 dark:text-neutral-500" />
+      <span className="block text-sm text-neutral-400 dark:text-neutral-500">
+        Loading Auth Pages...
+      </span>
     </div>
   );
 };
