@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/app/store";
 
 export function MainNav({
   isPanelOpen,
@@ -21,11 +22,17 @@ export function MainNav({
   isPanelOpen: boolean;
   setIsPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { data: session } = useSession();
+  const { data } = useSession();
+  const emailUserSession = useAuthStore((state) => state.emailUserSession);
+  const setEmailUserSession = useAuthStore(
+    (state) => state.setEmailUserSession
+  );
+  const setProviderStatus = useAuthStore((state) => state.setProviderStatus);
+  const session = emailUserSession ? emailUserSession : data;
 
   return (
     <header className="w-full border-b bg-white dark:bg-neutral-950">
-      <div className="mx-auto flex h-14 w-full max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-8">
+      <div className="mx-auto flex h-14 w-full max-w-[1400px] items-center justify-between gap-4 px-4 md:px-8">
         <Link
           href="/"
           className="text-base font-medium text-neutral-950 dark:text-neutral-50"
@@ -33,7 +40,7 @@ export function MainNav({
           Auth Pages
         </Link>
         <div className="flex items-center gap-2">
-          {session && (
+          {session && !emailUserSession?.user.isLoggingIn && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -51,7 +58,7 @@ export function MainNav({
                     <p className="break-words text-sm font-medium leading-none">
                       {session?.user?.name ? session?.user?.name : "user"}
                     </p>
-                    {session?.user?.email && (
+                    {session?.user?.email && !emailUserSession && (
                       <p className="break-words text-xs leading-none text-neutral-500 dark:text-neutral-400">
                         {session?.user?.email}
                       </p>
@@ -59,7 +66,20 @@ export function MainNav({
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    signOut();
+                    emailUserSession &&
+                      setEmailUserSession({
+                        ...emailUserSession.user,
+                        isLoggingOut: true,
+                      });
+                    !emailUserSession &&
+                      setProviderStatus({
+                        isLoggingOut: true,
+                      });
+                  }}
+                >
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -69,7 +89,7 @@ export function MainNav({
 
           <Button
             variant="ghost"
-            className="h-9 w-9"
+            className="hidden h-9 w-9 md:flex"
             size="icon"
             onClick={() => setIsPanelOpen(!isPanelOpen)}
           >

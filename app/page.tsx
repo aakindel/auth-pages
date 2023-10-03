@@ -15,15 +15,18 @@ import {
 import { cn } from "@/utils";
 import { LockIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { authComponents } from "./auth-components";
-import { useAuthStoreHydration } from "./store";
+import { useAuthStore, useAuthStoreHydration } from "./store";
 import { Icons } from "@/components/icons";
+import { authComponents } from "./auth-components";
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
+  const { data } = useSession();
   const isAuthStoreHydrated = useAuthStoreHydration();
+  const emailUserSession = useAuthStore((state) => state.emailUserSession);
+  const session = emailUserSession ? emailUserSession : data;
   const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [activeComponent, setActiveComponent] = useState(authComponents[0]);
+  const activeComponent = useAuthStore((state) => state.activeComponent);
+  const setActiveComponent = useAuthStore((state) => state.setActiveComponent);
 
   return isAuthStoreHydrated ? (
     <div className="mx-auto min-h-screen w-full">
@@ -32,7 +35,8 @@ const Home: NextPage = () => {
         setIsPanelOpen={setIsPanelOpen}
       >
         <MainNav isPanelOpen={isPanelOpen} setIsPanelOpen={setIsPanelOpen} />
-        {activeComponent.component}
+        {authComponents.find((item) => item.id === activeComponent.id)
+          ?.component ?? authComponents[0].component}
         <RightPanelSidebar>
           <RadioGroup
             value={activeComponent.id}
@@ -62,7 +66,7 @@ const Home: NextPage = () => {
                         <TooltipTrigger asChild>
                           <div className="relative flex h-[200px] w-full items-center">
                             <RadioGroupItem
-                              className="peer absolute right-4 top-4"
+                              className="peer absolute right-4 top-4 z-50"
                               value={authComponent.id}
                               id={authComponent.id}
                               disabled={authComponent?.isLocked && !session}
