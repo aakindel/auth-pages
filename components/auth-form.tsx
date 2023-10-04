@@ -115,6 +115,17 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
           )}
           <span className="mt-px block">Github</span>
         </Button>
+        <Button
+          variant="outline"
+          type="button"
+          disabled={isLoading || isGitHubLoading}
+          onClick={() => {
+            setEmail("johndoe@example.com");
+          }}
+        >
+          <Icons.mail className="mr-2 h-4 w-4" />
+          <span className="block">Demo Email</span>
+        </Button>
       </div>
     </div>
   );
