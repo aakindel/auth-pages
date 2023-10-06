@@ -57,11 +57,13 @@ const Home: NextPage = () => {
                           <span className="block text-sm font-medium">
                             {authComponent.title}
                           </span>
-                          {authComponent?.isLocked && !session && (
-                            <div className="flex items-center justify-center rounded-full bg-neutral-200 p-[5px] dark:bg-neutral-700">
-                              <LockIcon className="h-[10px] w-[10px] shrink-0" />
-                            </div>
-                          )}
+                          {authComponent?.isLocked &&
+                            (!session ||
+                              emailUserSession?.user?.isLoggingIn) && (
+                              <div className="flex items-center justify-center rounded-full bg-neutral-200 p-[5px] dark:bg-neutral-700">
+                                <LockIcon className="h-[10px] w-[10px] shrink-0" />
+                              </div>
+                            )}
                         </div>
                         <TooltipTrigger asChild>
                           <div className="relative flex h-[200px] w-full items-center">
@@ -69,7 +71,11 @@ const Home: NextPage = () => {
                               className="peer absolute right-4 top-4 z-50"
                               value={authComponent.id}
                               id={authComponent.id}
-                              disabled={authComponent?.isLocked && !session}
+                              disabled={
+                                authComponent?.isLocked &&
+                                (!session ||
+                                  emailUserSession?.user?.isLoggingIn)
+                              }
                             />
                             <Label
                               htmlFor={authComponent.id}

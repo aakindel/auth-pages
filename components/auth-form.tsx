@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useToast } from "./ui/use-toast";
 import { useAuthStore } from "@/app/store";
+import { authComponents } from "../app/auth-components";
 
 type AuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -25,6 +26,8 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
   const providerStatus = useAuthStore((state) => state.providerStatus);
   const setProviderStatus = useAuthStore((state) => state.setProviderStatus);
   const session = emailUserSession ? emailUserSession : data;
+  const activeComponent = useAuthStore((state) => state.activeComponent);
+  const setActiveComponent = useAuthStore((state) => state.setActiveComponent);
 
   useEffect(() => {
     if (emailUserSession && emailUserSession?.user?.isLoggingIn) {
@@ -48,6 +51,9 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
     }
     if (emailUserSession && emailUserSession?.user?.isLoggingOut) {
       setEmailUserSession(null);
+      setActiveComponent(
+        activeComponent.isLocked ? authComponents[0] : activeComponent
+      );
       toast({
         description: "Successfully logged out.",
         variant: "success",
@@ -55,6 +61,9 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
     }
     if (providerStatus?.isLoggingOut) {
       setProviderStatus(null);
+      setActiveComponent(
+        activeComponent.isLocked ? authComponents[0] : activeComponent
+      );
       toast({
         description: "Successfully logged out.",
         variant: "success",
