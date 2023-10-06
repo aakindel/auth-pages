@@ -7,11 +7,13 @@ import { Input } from "./ui/input";
 import { Icons } from "./icons";
 import React, { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
+import { useToast } from "./ui/use-toast";
 import { useAuthStore } from "@/app/store";
 
 type AuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function AuthForm({ className, ...props }: AuthFormProps) {
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGitHubLoading, setIsGitHubLoading] = useState<boolean>(false);
@@ -28,17 +30,33 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
         ...emailUserSession.user,
         isLoggingIn: false,
       });
+      toast({
+        description: "Successfully logged in.",
+        variant: "success",
+      });
     }
     if (providerStatus?.isLoggingIn) {
       setProviderStatus({
         isLoggingIn: false,
       });
+      toast({
+        description: "Successfully logged in.",
+        variant: "success",
+      });
     }
     if (emailUserSession && emailUserSession?.user?.isLoggingOut) {
       setEmailUserSession(null);
+      toast({
+        description: "Successfully logged out.",
+        variant: "success",
+      });
     }
     if (providerStatus?.isLoggingOut) {
       setProviderStatus(null);
+      toast({
+        description: "Successfully logged out.",
+        variant: "success",
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -17,7 +17,7 @@ const toastViewportVariants = cva(
       },
     },
     defaultVariants: {
-      position: "bottom-right",
+      position: "bottom-left",
     },
   }
 );
@@ -57,7 +57,7 @@ const toastVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      position: "bottom-right",
+      position: "bottom-left",
     },
   }
 );
