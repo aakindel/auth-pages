@@ -6,7 +6,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Icons } from "./icons";
 import React, { useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useToast } from "./ui/use-toast";
 import { useAuthStore } from "@/app/store";
 
@@ -17,12 +17,14 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGitHubLoading, setIsGitHubLoading] = useState<boolean>(false);
+  const { data } = useSession();
   const emailUserSession = useAuthStore((state) => state.emailUserSession);
   const setEmailUserSession = useAuthStore(
     (state) => state.setEmailUserSession
   );
   const providerStatus = useAuthStore((state) => state.providerStatus);
   const setProviderStatus = useAuthStore((state) => state.setProviderStatus);
+  const session = emailUserSession ? emailUserSession : data;
 
   useEffect(() => {
     if (emailUserSession && emailUserSession?.user?.isLoggingIn) {
@@ -63,16 +65,23 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    if (email.length) {
-      setIsLoading(true);
-
-      setEmailUserSession({
-        name: email,
-        email: email,
-        isLoggingIn: true,
+    if (session) {
+      toast({
+        description: "Please log out before trying to log in again.",
+        variant: "destructive",
       });
+    } else {
+      if (email.length) {
+        setIsLoading(true);
 
-      window.location.reload();
+        setEmailUserSession({
+          name: email,
+          email: email,
+          isLoggingIn: true,
+        });
+
+        window.location.reload();
+      }
     }
   }
 
@@ -120,10 +129,17 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
           type="button"
           disabled={isLoading || isGitHubLoading}
           onClick={() => {
-            setIsGitHubLoading(true);
-            signIn("github").then(() => {
-              setProviderStatus({ isLoggingIn: true });
-            });
+            if (session) {
+              toast({
+                description: "Please log out before trying to log in again.",
+                variant: "destructive",
+              });
+            } else {
+              setIsGitHubLoading(true);
+              signIn("github").then(() => {
+                setProviderStatus({ isLoggingIn: true });
+              });
+            }
           }}
         >
           {isGitHubLoading ? (
@@ -138,7 +154,14 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
           type="button"
           disabled={isLoading || isGitHubLoading}
           onClick={() => {
-            setEmail("johndoe@example.com");
+            if (session) {
+              toast({
+                description: "Please log out before trying to log in again.",
+                variant: "destructive",
+              });
+            } else {
+              setEmail("johndoe@example.com");
+            }
           }}
         >
           <Icons.mail className="mr-2 h-4 w-4" />
