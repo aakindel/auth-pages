@@ -80,7 +80,7 @@ export const RightPanelLayout = ({
       </div>
       <div
         className={cn(
-          isPanelOpen
+          isPanelOpen && size > 0
             ? "border-l border-solid border-l-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900"
             : "",
           "fixed bottom-0 right-0 top-0"
