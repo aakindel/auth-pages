@@ -25,7 +25,9 @@ export const RightPanelLayout = ({
   setIsPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [size, setSize] = useState(
-    typeof window !== "undefined" && window.innerWidth >= 768 ? 384 : 0
+    isPanelOpen && typeof window !== "undefined" && window.innerWidth >= 768
+      ? 384
+      : 0
   );
 
   useEffect(() => {
